@@ -13,9 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_binding_teams', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
             $table->bigInteger('user_id')->index();
-            $table->bigInteger('team_id')->index();
+            $table->string('entity', 255)->index();
+            $table->bigInteger('entity_id')->index();
+            $table->longText('content');
+            $table->timestamp('created_at');
+            $table->softDeletes();
+
         });
     }
 
@@ -26,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_binding_teams');
+        Schema::dropIfExists('comments');
     }
 };

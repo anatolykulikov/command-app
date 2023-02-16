@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('users_meta', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user')->index('user_meta_index');
-            $table->string('key')->index('meta_key_index');
+            $table->bigInteger('user_id')->index();
+            $table->string('key')->index();
             $table->longText('value');
         });
     }

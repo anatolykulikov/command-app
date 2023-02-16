@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_binding_teams', function (Blueprint $table) {
-            $table->bigInteger('user_id')->index();
-            $table->bigInteger('team_id')->index();
+        Schema::create('priorities', function (Blueprint $table) {
+            $table->id();
+            $table->string('entity', 255)->index();
+            $table->integer('order')->default(0);
+            $table->mediumText('title');
+            $table->string('color', 6);
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_binding_teams');
+        Schema::dropIfExists('priorities');
     }
 };

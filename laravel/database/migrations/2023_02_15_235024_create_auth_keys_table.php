@@ -14,8 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('auth_keys', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('user')->index();
+            $table->bigInteger('user_id')->index();
             $table->string('token', 512)->index();
             $table->timestamp('expired');
         });

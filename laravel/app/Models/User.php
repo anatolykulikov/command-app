@@ -21,7 +21,7 @@ class User extends Model implements UserInterface
                 'users.role',
             ])
             ->join('auth_keys', function ($join) {
-                $join->on('auth_keys.user', '=', 'users.id');
+                $join->on('auth_keys.user_id', '=', 'users.id');
             })
             ->where('auth_keys.token', '=', $key)
             ->where('auth_keys.expired', '>', date('c'))
