@@ -26,7 +26,8 @@ return new class extends Migration
             $table->unsignedBigInteger('executor_id')->index()->nullable();
             $table->mediumText('title');
             $table->longText('description')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             $table->softDeletes();
         });
     }

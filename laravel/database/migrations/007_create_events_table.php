@@ -23,7 +23,8 @@ return new class extends Migration
             $table->boolean('repeat')->default(false);
             $table->json('repeat_settings')->nullable();
             $table->timestamp('started_at');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             $table->softDeletes();
         });
     }

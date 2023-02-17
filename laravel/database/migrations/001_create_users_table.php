@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('active');
             $table->string('role');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             $table->softDeletes();
         });
     }

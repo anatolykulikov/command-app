@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->useCurrent();
             $table->index(['task_id', 'user_id']);
         });
     }

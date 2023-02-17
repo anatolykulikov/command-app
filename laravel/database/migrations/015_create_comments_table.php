@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('entity', 255)->index();
             $table->unsignedBigInteger('entity_id')->index();
             $table->longText('content');
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->useCurrent();
             $table->softDeletes();
 
         });

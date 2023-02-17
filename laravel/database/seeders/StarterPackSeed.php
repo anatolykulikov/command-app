@@ -20,7 +20,6 @@ class StarterPackSeed extends Seeder
             'password' => UserHelper::hashPassword('superadminpass'),
             'active' => 1,
             'role' => 'admin',
-            'created_at' => date('Y-m-d H:i:s')
         ]);
     }
 }

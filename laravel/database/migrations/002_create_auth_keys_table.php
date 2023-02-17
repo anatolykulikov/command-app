@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('token', 512)->index();
+            $table->mediumText('footprint')->nullable();
+            $table->timestamp('created_at')->useCurrent();
             $table->timestamp('expired');
         });
     }
