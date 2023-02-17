@@ -13,6 +13,7 @@ class AuthKeysRepository
         return AuthKeys::query()->insert([
             'user_id' => $userId,
             'token' => $token->getKey(),
+            'footprint' => $token->getFootprint(),
             'expired' => date('Y-m-d H:m:s', $token->getExpired())
         ]);
     }
