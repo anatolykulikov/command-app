@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('is_open')->default(true);
             $table->unsignedBigInteger('executor_id')->index()->nullable();
             $table->mediumText('title');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

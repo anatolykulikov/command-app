@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responses\Success;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -16,13 +15,5 @@ class AuthorizedController extends BaseController
     )
     {
         $this->user = $request->user('web');
-    }
-
-    public function date(): Success
-    {
-        return new Success([
-            'date' => date('c'),
-            'user' => $this->user->getLogin()
-        ]);
     }
 }

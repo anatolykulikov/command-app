@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('creator_id')->references('id')->on('users');
             $table->boolean('public')->default(true);
             $table->mediumText('title');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

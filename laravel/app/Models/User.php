@@ -11,6 +11,17 @@ class User extends Model implements UserInterface
     protected $fillable = ['id', 'login', 'role', 'active'];
     protected $guarded = ['password'];
 
+    public static function getFromId(int $userId): ?static
+    {
+        $query = self::query()
+            ->where('id', '=', $userId)
+            ->get()
+            ->first();
+
+        if(!$query) return null;
+        return new static($query->attributes);
+    }
+
     public static function getFromToken(string $key): ?static
     {
         $query = self::query()

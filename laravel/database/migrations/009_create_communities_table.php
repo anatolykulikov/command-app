@@ -17,12 +17,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('creator_id');
             $table->foreign('creator_id')->references('id')->on('users');
-            $table->unsignedBigInteger('status_id');
             $table->string('type', 255);
             $table->unsignedBigInteger('team_id')->nullable();
             $table->boolean('public')->default(true);
             $table->mediumText('title');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

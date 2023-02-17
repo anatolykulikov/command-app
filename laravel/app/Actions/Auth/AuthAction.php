@@ -3,7 +3,9 @@
 namespace App\Actions\Auth;
 
 use App\Actions\Auth\DTO\CreateNewToken;
+use App\Actions\User\UserProfileAction;
 use App\Helpers\UserHelper;
+use App\Models\User;
 use App\Repository\AuthKeys\AuthKeysRepository;
 use App\Repository\User\UserRepository;
 use Illuminate\Http\Request;
@@ -32,7 +34,7 @@ class AuthAction
      * @throws ValidationException
      * @throws Exception
      */
-    public function handle(Request $request): bool
+    public function handle(Request $request): UserProfileAction
     {
         $validation = Validator::make($request->all(), [
             'lg' => 'required|string',
@@ -54,6 +56,8 @@ class AuthAction
 
         UserHelper::setAuthCookie($this->newToken);
 
-        return true;
+        return UserProfileAction::create(
+            User::getFromId($user->getId())
+        );
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('task_groups', function (Blueprint $table) {
             $table->id();
             $table->mediumText('title');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->timestamp('started_at')->nullable()->default(null);
             $table->timestamp('ending_at')->nullable()->default(null);
             $table->softDeletes();

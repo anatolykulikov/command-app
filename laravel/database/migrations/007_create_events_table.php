@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('creator_id')->index();
             $table->foreign('creator_id')->references('id')->on('users');
-            $table->string('entity', 255)->index();
+            $table->string('type', 255)->index();
             $table->mediumText('title');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->boolean('repeat')->default(false);
             $table->json('repeat_settings')->nullable();
             $table->timestamp('started_at');

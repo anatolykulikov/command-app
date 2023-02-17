@@ -4,13 +4,19 @@ use App\Http\Middleware\Authenticate;
 use Illuminate\Routing\Router;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AuthorizedController;
+use App\Http\Controllers\UserController;
 
 /** @var Router $router */
 
 $router->get('health', [Controller::class, 'healthCheck']);
+
 $router->post('login', [AuthController::class, 'login']);
 
 $router->group(['middleware' => [Authenticate::class]], function ($router) {
-    $router->get('date', [AuthorizedController::class, 'date']);
+
+    /* Роуты пользователя */
+    $router->group(['prefix' => 'user'], function ($router) {
+        $router->get('current', [UserController::class, 'getCurrent']);
+        $router->get('{userId}', [UserController::class, 'getUser']);
+    });
 });
