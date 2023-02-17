@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('auth_keys', function (Blueprint $table) {
-            $table->bigInteger('user_id')->index();
-            $table->string('token', 512)->index();
-            $table->timestamp('expired');
+        Schema::create('teams_meta', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('team_id')->index();
+            $table->foreign('team_id')->references('id')->on('teams');
+            $table->string('key')->index();
+            $table->longText('value');
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('auth_keys');
+        Schema::dropIfExists('teamsmeta');
     }
 };

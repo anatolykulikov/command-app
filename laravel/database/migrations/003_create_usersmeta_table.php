@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('teams', function (Blueprint $table) {
+        Schema::create('users_meta', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('creator_id')->index();
-            $table->boolean('public')->default(true);
-            $table->mediumText('title');
-            $table->longText('description');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->unsignedBigInteger('user_id')->index();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('key')->index();
+            $table->longText('value');
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teams');
+        Schema::dropIfExists('users_meta');
     }
 };

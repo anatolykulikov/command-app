@@ -13,13 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('communities', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('community_id')->index();
-            $table->bigInteger('creator_id');
-            $table->bigInteger('parent_task')->index()->nullable();
-            $table->bigInteger('status_id');
-            $table->bigInteger('priority_id');
+            $table->unsignedBigInteger('creator_id');
+            $table->foreign('creator_id')->references('id')->on('users');
+            $table->unsignedBigInteger('status_id');
+            $table->string('type', 255);
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->boolean('public')->default(true);
             $table->mediumText('title');
             $table->longText('description');
             $table->timestamps();
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('communities');
     }
 };

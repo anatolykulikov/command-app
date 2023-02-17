@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_binding_teams', function (Blueprint $table) {
-            $table->bigInteger('user_id')->index();
-            $table->bigInteger('team_id')->index();
+        Schema::create('users_event', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->index();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('event_id')->index();
+            $table->foreign('event_id')->references('id')->on('events');
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_binding_teams');
+        Schema::dropIfExists('users_event');
     }
 };

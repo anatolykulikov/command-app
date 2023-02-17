@@ -13,15 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('communities', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('creator_id');
-            $table->bigInteger('status_id');
-            $table->bigInteger('priority_id');
-            $table->string('type', 255);
-            $table->bigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('creator_id')->index();
+            $table->foreign('creator_id')->references('id')->on('users');
+            $table->string('entity', 255)->index();
             $table->mediumText('title');
             $table->longText('description');
+            $table->boolean('repeat')->default(false);
+            $table->json('repeat_settings')->nullable();
+            $table->timestamp('started_at');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('communities');
+        Schema::dropIfExists('events');
     }
 };

@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_event', function (Blueprint $table) {
-            $table->bigInteger('user_id')->index();
-            $table->bigInteger('event_id')->index();
+        Schema::create('auth_keys', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->index();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('token', 512)->index();
+            $table->timestamp('expired');
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_event');
+        Schema::dropIfExists('auth_keys');
     }
 };

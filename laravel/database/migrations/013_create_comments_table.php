@@ -13,18 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('creator_id')->index();
+            $table->unsignedBigInteger('user_id')->index();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('entity', 255)->index();
-            $table->bigInteger('entity_id')->index();
-            $table->mediumText('title');
-            $table->longText('description');
-            $table->boolean('repeat')->default(false);
-            $table->json('repeat_settings')->nullable();
-            $table->timestamp('started_at');
-            $table->timestamps();
+            $table->unsignedBigInteger('entity_id')->index();
+            $table->longText('content');
+            $table->timestamp('created_at');
             $table->softDeletes();
+
         });
     }
 
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('comments');
     }
 };

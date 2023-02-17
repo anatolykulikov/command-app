@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_meta', function (Blueprint $table) {
+        Schema::create('task_groups', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->index();
-            $table->string('key')->index();
-            $table->longText('value');
+            $table->mediumText('title');
+            $table->longText('description');
+            $table->timestamp('started_at')->nullable()->default(null);
+            $table->timestamp('ending_at')->nullable()->default(null);
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_meta');
+        Schema::dropIfExists('task_groups');
     }
 };

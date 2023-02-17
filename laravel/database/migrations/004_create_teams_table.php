@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->index();
-            $table->string('entity', 255)->index();
-            $table->bigInteger('entity_id')->index();
-            $table->longText('content');
-            $table->timestamp('created_at');
+            $table->unsignedBigInteger('creator_id')->index();
+            $table->foreign('creator_id')->references('id')->on('users');
+            $table->boolean('public')->default(true);
+            $table->mediumText('title');
+            $table->longText('description');
+            $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('teams');
     }
 };
