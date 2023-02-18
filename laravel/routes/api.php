@@ -17,6 +17,11 @@ $router->group(['middleware' => [Authenticate::class]], function ($router) {
     /* Роуты пользователя */
     $router->group(['prefix' => 'user'], function ($router) {
         $router->get('current', [UserController::class, 'getCurrent']);
-        $router->get('{userId}', [UserController::class, 'getUser']);
+        $router->get('profile/{userId}', [UserController::class, 'getUser']);
+
+        $router->get('logout', [UserController::class, 'logout']);
+        $router->get('terminate-os', [UserController::class, 'terminateOtherSessions']);
+        $router->get('terminate-logout', [UserController::class, 'terminateLogout']);
+
     });
 });

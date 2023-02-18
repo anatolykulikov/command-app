@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Actions\Auth\DTO\CreateNewToken;
 use App\Actions\Auth\DTO\CreateToken;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class UserHelper
 {
@@ -21,18 +22,35 @@ class UserHelper
             self::CookieName,
             $value,
             [
+                'path' => '/',
                 'expires' => $token->getExpired(),
                 'httponly' => true,
+                'samesite' => 'strict'
             ]
         );
     }
 
-    public static function readAuthCookie(Request $request)
+    public static function readAuthCookie(Request $request): ?CreateToken
     {
         if(!$request->hasCookie(UserHelper::CookieName)) return null;
         $cookie = explode(':', base64_decode($request->cookie(UserHelper::CookieName)));
         if(!$cookie) return null;
-        return new CreateToken($cookie[0], $cookie[1]);
+        return new CreateToken($cookie[0], $cookie[1], $cookie[2] ?? null);
+    }
+
+    public static function deleteAuthCookie(): void
+    {
+        setcookie(
+            self::CookieName,
+            '',
+            [
+                'path' => '/',
+                'expires' => time()-3600,
+                'httponly' => true,
+                'samesite' => 'strict'
+            ]
+        );
+
     }
 
     public static function hashPassword(string $pass): string
