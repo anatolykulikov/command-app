@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class UserProfileAction
 {
-    protected User $user;
+    protected ?User $user;
 
     /* Публичные поля */
     public string $login;
@@ -25,51 +25,83 @@ class UserProfileAction
     public Collection $communities;
     public Collection $events;
 
-    public function __construct(User $user)
+    public function __construct(?User $user = null)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @param User $user
+     * @param bool $isCurrent
+     * @return static
+     */
+    public function create(User $user, bool $isCurrent = true): static
+    {
+        $this->setUser($user);
+        $this->fetchMetas();
+
+        if($isCurrent) {
+            $this->fetchTasks();
+            $this->fetchTeams();
+            $this->fetchCommunities();
+            $this->fetchEvents();
+        }
+
+        return $this;
+    }
+
+    private function setUser(User $user): void
     {
         $this->user = $user;
         $this->login = $user->getLogin();
         $this->role = $user->getRole();
         $this->active = $user->getActive();
-        $this->fetchMetas();
-        $this->fetchTasks();
-        $this->fetchTeams();
-        $this->fetchCommunities();
-        $this->fetchEvents();
     }
 
     /**
-     * @param User $user
-     * @return static
+     * Получаем мета-данные пользователи
+     * (отображаемое имя, аватар, контакты и прочее)
+     * @return void
      */
-    public static function create(User $user): static
-    {
-        return new static($user);
-    }
-
     private function fetchMetas(): void
     {
         $this->meta = new UserMetaDTO($this->user->getId());
     }
 
+    /**
+     * Текущие задачи пользователя по всем проектам
+     * @return void
+     */
     private function fetchTasks(): void
     {
         $this->tasks = (new TasksRepository())
             ->getListByUser($this->user->getId());
     }
 
+    /**
+     * Список команд пользователя
+     * @return void
+     */
     private function fetchTeams(): void
     {
         $this->teams = (new TeamsRepository())
             ->getUserTeams($this->user->getId());
     }
 
+    /**
+     * Список сообществ пользователя
+     * @return void
+     */
     private function fetchCommunities(): void
     {
         $this->communities = (new CommunitiesRepository())
             ->getUserCommunity($this->user->getId());
     }
 
+    /**
+     * Список актуальных событий для пользователя
+     * @return void
+     */
     private function fetchEvents(): void
     {
         $this->events = (new EventsRepository())

@@ -18,16 +18,19 @@ class AuthAction
     private UserRepository $userRepository;
     private CreateNewToken $newToken;
     private AuthKeysRepository $keysRepository;
+    private UserProfileAction $userProfileAction;
 
     public function __construct(
         UserRepository $userRepository,
         CreateNewToken $newToken,
-        AuthKeysRepository $keysRepository
+        AuthKeysRepository $keysRepository,
+        UserProfileAction $userProfileAction
     )
     {
         $this->userRepository = $userRepository;
         $this->newToken = $newToken;
         $this->keysRepository = $keysRepository;
+        $this->userProfileAction = $userProfileAction;
     }
 
     /**
@@ -56,7 +59,7 @@ class AuthAction
 
         UserHelper::setAuthCookie($this->newToken);
 
-        return UserProfileAction::create(
+        return $this->userProfileAction->create(
             User::getFromId($user->getId())
         );
     }

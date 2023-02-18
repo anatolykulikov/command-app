@@ -8,7 +8,7 @@ use App\Repository\AuthKeys\AuthKeysRepository;
 use Exception;
 use Illuminate\Http\Request;
 
-class CurrentLogoutAction
+class TerminateOtherSessionsAction
 {
     protected AuthKeysRepository $keysRepository;
 
@@ -25,10 +25,9 @@ class CurrentLogoutAction
     public function handle(Request $request, User $user): bool
     {
         $token = UserHelper::readAuthCookie($request);
-        $delete = $this->keysRepository->deleteUserToken($user->getId(), $token->getKey());
-        if(!$delete) throw new Exception('Произошла ошибка при выходе из системы');
-
-        UserHelper::deleteAuthCookie();
+        $delete = $this->keysRepository->deleteOtherUserTokens($user->getId(), $token->getKey());
+        if($delete === false) throw new Exception('Произошла ошибка при завершении прочих сессий');
+        if($delete === 0) throw new Exception('Нет сессий для удаления');
         return true;
     }
 }
