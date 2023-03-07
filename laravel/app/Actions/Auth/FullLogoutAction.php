@@ -10,12 +10,15 @@ use Exception;
 class FullLogoutAction
 {
     protected AuthKeysRepository $keysRepository;
+    protected UserHelper $userHelper;
 
     public function __construct(
-        AuthKeysRepository $keysRepository
+        AuthKeysRepository $keysRepository,
+        UserHelper $userHelper
     )
     {
         $this->keysRepository = $keysRepository;
+        $this->userHelper = $userHelper;
     }
 
     /**
@@ -26,7 +29,7 @@ class FullLogoutAction
         $delete = $this->keysRepository->deleteAllUserTokens($user->getId());
         if(!$delete) throw new Exception('Произошла ошибка при выходе из системы');
 
-        UserHelper::deleteAuthCookie();
+        $this->userHelper->deleteAuthCookie();
         return true;
     }
 }

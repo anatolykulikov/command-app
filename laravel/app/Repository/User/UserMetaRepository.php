@@ -14,4 +14,17 @@ class UserMetaRepository
             ->where('user_id', '=', $userId)
             ->get();
     }
+
+    public function createBatchUserMeta(int $userId, array $metas): bool
+    {
+        $queryParams = [];
+        foreach ($metas as $key => $value) {
+            $queryParams[] = [
+                'user_id' => $userId,
+                'key' => $key,
+                'value' => $value
+            ];
+        }
+        return UserMeta::query()->insert($queryParams);
+    }
 }

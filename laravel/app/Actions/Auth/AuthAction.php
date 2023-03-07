@@ -19,18 +19,21 @@ class AuthAction
     private CreateNewToken $newToken;
     private AuthKeysRepository $keysRepository;
     private UserProfileAction $userProfileAction;
+    protected UserHelper $userHelper;
 
     public function __construct(
         UserRepository $userRepository,
         CreateNewToken $newToken,
         AuthKeysRepository $keysRepository,
-        UserProfileAction $userProfileAction
+        UserProfileAction $userProfileAction,
+        UserHelper $userHelper
     )
     {
         $this->userRepository = $userRepository;
         $this->newToken = $newToken;
         $this->keysRepository = $keysRepository;
         $this->userProfileAction = $userProfileAction;
+        $this->userHelper = $userHelper;
     }
 
     /**
@@ -48,7 +51,7 @@ class AuthAction
         $user = $this->userRepository->getUserByLogin($request->get('lg'));
         if(!$user) throw new Exception('Пользователя не существует');
 
-        if(!UserHelper::comparePasswords($request->get('ps'), $user->getPassword())) {
+        if(!$this->userHelper->comparePasswords($request->get('ps'), $user->getPassword())) {
             throw new Exception('Неправильный пароль');
         }
 
@@ -57,7 +60,7 @@ class AuthAction
             $this->newToken
         );
 
-        UserHelper::setAuthCookie($this->newToken);
+        $this->userHelper->setAuthCookie($this->newToken);
 
         return $this->userProfileAction->create(
             User::getFromId($user->getId())

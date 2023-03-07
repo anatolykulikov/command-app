@@ -11,12 +11,15 @@ use Illuminate\Http\Request;
 class TerminateOtherSessionsAction
 {
     protected AuthKeysRepository $keysRepository;
+    protected UserHelper $userHelper;
 
     public function __construct(
-        AuthKeysRepository $keysRepository
+        AuthKeysRepository $keysRepository,
+        UserHelper $userHelper
     )
     {
         $this->keysRepository = $keysRepository;
+        $this->userHelper = $userHelper;
     }
 
     /**
@@ -24,7 +27,7 @@ class TerminateOtherSessionsAction
      */
     public function handle(Request $request, User $user): bool
     {
-        $token = UserHelper::readAuthCookie($request);
+        $token = $this->userHelper->readAuthCookie($request);
         $delete = $this->keysRepository->deleteOtherUserTokens($user->getId(), $token->getKey());
         if($delete === false) throw new Exception('Произошла ошибка при завершении прочих сессий');
         if($delete === 0) throw new Exception('Нет сессий для удаления');

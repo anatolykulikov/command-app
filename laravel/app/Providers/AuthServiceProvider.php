@@ -17,7 +17,7 @@ class AuthServiceProvider extends ServiceProvider
 
     public function getUser(Request $request): ?User
     {
-        $token = UserHelper::readAuthCookie($request);
+        $token = (new UserHelper)->readAuthCookie($request);
         if(!$token) return null;
         return User::getFromToken($token->getKey());
     }

@@ -2,6 +2,7 @@
 
 namespace App\Actions\User;
 
+use App\Helpers\UserHelper;
 use App\Models\User;
 use App\Actions\User\DTO\UserMetaDTO;
 use App\Repository\Communities\CommunitiesRepository;
@@ -13,6 +14,7 @@ use Illuminate\Support\Collection;
 class UserProfileAction
 {
     protected ?User $user;
+    protected UserHelper $userHelper;
 
     /* Публичные поля */
     public string $login;
@@ -25,9 +27,13 @@ class UserProfileAction
     public Collection $communities;
     public Collection $events;
 
-    public function __construct(?User $user = null)
+    public function __construct(
+        ?User $user = null,
+        UserHelper $userHelper = null
+    )
     {
         $this->user = $user;
+        $this->userHelper = $userHelper;
     }
 
     /**
@@ -54,7 +60,7 @@ class UserProfileAction
     {
         $this->user = $user;
         $this->login = $user->getLogin();
-        $this->role = $user->getRole();
+        $this->role = $this->userHelper->getUserRoleTitle($user->getRole());
         $this->active = $user->getActive();
     }
 

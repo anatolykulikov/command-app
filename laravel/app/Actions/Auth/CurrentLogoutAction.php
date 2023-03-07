@@ -11,12 +11,15 @@ use Illuminate\Http\Request;
 class CurrentLogoutAction
 {
     protected AuthKeysRepository $keysRepository;
+    protected UserHelper $userHelper;
 
     public function __construct(
-        AuthKeysRepository $keysRepository
+        AuthKeysRepository $keysRepository,
+        UserHelper $userHelper
     )
     {
         $this->keysRepository = $keysRepository;
+        $this->userHelper = $userHelper;
     }
 
     /**
@@ -24,11 +27,11 @@ class CurrentLogoutAction
      */
     public function handle(Request $request, User $user): bool
     {
-        $token = UserHelper::readAuthCookie($request);
+        $token = $this->userHelper->readAuthCookie($request);
         $delete = $this->keysRepository->deleteUserToken($user->getId(), $token->getKey());
         if(!$delete) throw new Exception('Произошла ошибка при выходе из системы');
 
-        UserHelper::deleteAuthCookie();
+        $this->userHelper->deleteAuthCookie();
         return true;
     }
 }

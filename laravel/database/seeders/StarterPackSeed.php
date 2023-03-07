@@ -17,7 +17,7 @@ class StarterPackSeed extends Seeder
     {
         DB::table('users')->insert([
             'login' => 'admin',
-            'password' => UserHelper::hashPassword('superadminpass'),
+            'password' => (new UserHelper())->hashPassword('superadminpass'),
             'active' => 1,
             'role' => 'admin',
         ]);

@@ -11,9 +11,9 @@ class CreateNewToken implements AuthTokenInterface
     protected int $expired;
     protected string $footprint;
 
-    public function __construct()
+    public function __construct(UserHelper $userHelper)
     {
-        $this->key = UserHelper::generateRandomPassword();
+        $this->key = $userHelper->generateRandomPassword();
         $this->expired = time() + 60*60*24*30;
         $this->footprint = $this->generateFootprint();
     }

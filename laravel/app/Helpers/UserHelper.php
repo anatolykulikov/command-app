@@ -5,13 +5,99 @@ namespace App\Helpers;
 use App\Actions\Auth\DTO\CreateNewToken;
 use App\Actions\Auth\DTO\CreateToken;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 
 class UserHelper
 {
     const CookieName = 'applud';
 
-    public static function setAuthCookie(CreateNewToken $token): void
+    /**
+     * Все пользовательские роли системы
+     * @return array[]
+     */
+    protected function userRoles(): array
+    {
+        return [
+            'admin' => [
+                'title' => 'Администратор',
+                'level' => 100
+            ],
+            'owner' => [
+                'title' => 'Владелец',
+                'level' => 90
+            ],
+            'supervisor' => [
+                'title' => 'Управленец',
+                'level' => 50
+            ],
+            'user' => [
+                'title' => 'Пользователь',
+                'level' => 10
+            ],
+            'guest' => [
+                'title' => 'Гость',
+                'level' => 0
+            ]
+        ];
+    }
+
+    /**
+     * @param string $role
+     * @return int|null
+     */
+    public function getUserRolePoint(string $role): ?int
+    {
+        $roles = (new static())->userRoles();
+        if (!isset($roles[$role]) || !isset($roles[$role]['level'])) return null;
+        return $roles[$role]['level'];
+    }
+
+    /**
+     * @param string $role
+     * @return string
+     */
+    public function getUserRoleTitle(string $role): string
+    {
+        $roles = (new static())->userRoles();
+        if (!isset($roles[$role]) || !isset($roles[$role]['title'])) return $role;
+        return $roles[$role]['title'];
+    }
+
+    /**
+     * Получает список пользовательских ролей (учитывая уровень роли текущего пользователя)
+     * @param string $role
+     * @return array
+     */
+    public function getUserRoleList(string $role): array
+    {
+        $instance = new static();
+        $currentRoleLevel = $role ? $instance->getUserRolePoint($role) : null;
+
+        $list = [];
+
+        if($currentRoleLevel) {
+            foreach ($instance->userRoles() as $title => $userRole) {
+                if($currentRoleLevel > $userRole['level']
+                    || $currentRoleLevel === $instance->getUserRolePoint('admin')) {
+                    $list[$title] = $userRole['title'];
+                }
+                if(!$currentRoleLevel) $list[$title] = $userRole['title'];
+            }
+        }
+
+        return $list;
+    }
+
+    // TODO: Разрешенные мета-записи
+    public function allowedMetas(): array
+    {
+        return [];
+    }
+
+    /**
+     * @param CreateNewToken $token
+     * @return void
+     */
+    public function setAuthCookie(CreateNewToken $token): void
     {
         $value = base64_encode(implode(':', [
             'key' => $token->getKey(),
@@ -30,7 +116,11 @@ class UserHelper
         );
     }
 
-    public static function readAuthCookie(Request $request): ?CreateToken
+    /**
+     * @param Request $request
+     * @return CreateToken|null
+     */
+    public function readAuthCookie(Request $request): ?CreateToken
     {
         if(!$request->hasCookie(UserHelper::CookieName)) return null;
         $cookie = explode(':', base64_decode($request->cookie(UserHelper::CookieName)));
@@ -38,7 +128,10 @@ class UserHelper
         return new CreateToken($cookie[0], $cookie[1], $cookie[2] ?? null);
     }
 
-    public static function deleteAuthCookie(): void
+    /**
+     * @return void
+     */
+    public function deleteAuthCookie(): void
     {
         setcookie(
             self::CookieName,
@@ -53,12 +146,20 @@ class UserHelper
 
     }
 
-    public static function hashPassword(string $pass): string
+    /**
+     * @param string $pass
+     * @return string
+     */
+    public function hashPassword(string $pass): string
     {
         return password_hash($pass, PASSWORD_BCRYPT);
     }
 
-    public static function generateRandomPassword(int $length = 64): string
+    /**
+     * @param int $length
+     * @return string
+     */
+    public function generateRandomPassword(int $length = 64): string
     {
         try {
             return self::hashPassword(bin2hex(random_bytes($length)));
@@ -67,9 +168,31 @@ class UserHelper
         }
     }
 
-    public static function comparePasswords(string $password, string $hash): bool
+    /**
+     * @param string $password
+     * @param string $hash
+     * @return bool
+     */
+    public function comparePasswords(string $password, string $hash): bool
     {
         return password_verify($password, $hash);
     }
 
+    /**
+     * @param string $current
+     * @param string $assignedRole
+     * @return bool
+     */
+    public function assignRoleAbility(string $current, string $assignedRole): bool
+    {
+        $instance = new static();
+        $currentRoleLevel = $instance->getUserRolePoint($current);
+        $assignedRoleLevel = $instance->getUserRolePoint($assignedRole);
+
+        if ($currentRoleLevel === 0) return false;
+        if (!$currentRoleLevel
+            || !$assignedRoleLevel
+            || $currentRoleLevel < $assignedRoleLevel) return false;
+        return true;
+    }
 }
