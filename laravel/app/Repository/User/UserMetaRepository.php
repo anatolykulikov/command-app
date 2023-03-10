@@ -32,18 +32,13 @@ class UserMetaRepository
     {
         $queryParams = [];
         foreach ($metas as $key => $value) {
-            $queryParams[] = [
-                'user_id' => $userId,
-                'key' => $key,
-                'value' => $value
-            ];
+            $queryParams[] = (bool) UserMeta::query()->updateOrInsert(
+                ['user_id' => $userId, 'key' => $key],
+                ['value' => $value]
+            );
         }
 
-        return UserMeta::query()->upsert(
-            $queryParams,
-            ['user_id', 'key'],
-            ['value']
-        );
+        return !in_array(false, $queryParams);
     }
 
     public function deleteUserMeta(int $userId, array $metas): bool
