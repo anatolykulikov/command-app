@@ -50,6 +50,8 @@ class AuthAction
 
         $user = $this->userRepository->getUserByLogin($request->get('lg'));
         if(!$user) throw new Exception('Пользователя не существует');
+        if($user->isDeleted()) throw new Exception('Пользователь не существует или был удалён');
+        if(!$user->isActive()) throw new Exception('Пользователь заблокирован');
 
         if(!$this->userHelper->comparePasswords($request->get('ps'), $user->getPassword())) {
             throw new Exception('Неправильный пароль');

@@ -10,17 +10,18 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    private AuthAction $authAction;
-
-    public function __construct(AuthAction $authAction)
-    {
-        $this->authAction = $authAction;
-    }
-
-    public function login(Request $request): Error|Success
+    /**
+     * @param Request $request
+     * @param AuthAction $authAction
+     * @return Error|Success
+     */
+    public function login(
+        Request $request,
+        AuthAction $authAction
+    ): Error|Success
     {
         try {
-            return new Success($this->authAction->handle($request));
+            return new Success($authAction->handle($request));
         } catch (Exception $exception) {
             return new Error($exception->getMessage());
         }

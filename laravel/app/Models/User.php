@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model implements UserInterface
 {
     protected $table = 'users';
-    protected $fillable = ['id', 'login', 'role', 'active'];
+    protected $fillable = ['id', 'login', 'role', 'active', 'deleted_at'];
     protected $guarded = ['password'];
 
     public static function getFromId(int $userId): ?static
@@ -30,6 +30,7 @@ class User extends Model implements UserInterface
                 'users.login',
                 'users.active',
                 'users.role',
+                'deleted_at',
             ])
             ->join('auth_keys', function ($join) {
                 $join->on('auth_keys.user_id', '=', 'users.id');
@@ -61,5 +62,10 @@ class User extends Model implements UserInterface
     public function getRole(): string
     {
         return $this->attributes['role'];
+    }
+
+    public function isDeleted(): bool
+    {
+        return boolval($this->attributes['deleted_at']);
     }
 }

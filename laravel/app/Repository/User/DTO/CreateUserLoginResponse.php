@@ -7,11 +7,22 @@ class CreateUserLoginResponse
     protected int $id;
     protected string $login;
     protected string $password;
-    public function __construct(int $id, string $login, string $password)
+    protected bool $isActive;
+    protected bool $isDeleted;
+
+    public function __construct(
+        int $id,
+        string $login,
+        string $password,
+        bool $isActive,
+        bool $isDeleted
+    )
     {
         $this->id = $id;
         $this->login = $login;
         $this->password = $password;
+        $this->isActive = $isActive;
+        $this->isDeleted = $isDeleted;
     }
 
     /**
@@ -36,5 +47,21 @@ class CreateUserLoginResponse
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted(): bool
+    {
+        return $this->isDeleted;
     }
 }

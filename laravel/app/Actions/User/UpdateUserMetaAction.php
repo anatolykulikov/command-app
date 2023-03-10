@@ -5,7 +5,6 @@ namespace App\Actions\User;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Repository\User\UserMetaRepository;
-use Exception;
 
 class UpdateUserMetaAction
 {
@@ -18,8 +17,15 @@ class UpdateUserMetaAction
     )
     {
         $this->userMetaRepository = $userMetaRepository;
+        $this->forUpdate = [];
+        $this->forDelete = [];
     }
 
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return string
+     */
     public function handle(Request $request, User $user): string
     {
         foreach ($request->toArray() as $key => $value) {
