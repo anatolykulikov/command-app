@@ -39,7 +39,7 @@ class CreateNewUserAction
         $user->setId($this->userRepository->createUser($user));
         if(!$user->getId()) throw new Exception('При создании пользователя произошла ошибка');
 
-        $this->userMetaRepository->createBatchUserMeta(
+        $this->userMetaRepository->createUserMeta(
             $user->getId(),
             $user->getMetas()
         );

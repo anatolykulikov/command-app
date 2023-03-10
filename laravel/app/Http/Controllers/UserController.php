@@ -64,7 +64,6 @@ class UserController extends AuthorizedController
      */
     public function updateMeta(): Success
     {
-        // TODO: Добавить верификацию на мету (разрешенные имена)
         return new Success(
             $this->updateUserMetaAction->handle(
                 $this->request,
@@ -92,7 +91,6 @@ class UserController extends AuthorizedController
      */
     public function updateUserMeta(int $userId): Success|Error
     {
-        // TODO: Добавить верификацию на мету (разрешенные имена)
         $requestedUser = User::getFromId($userId);
         if(!$requestedUser) return new Error('Пользователь не существует');
         return new Success(

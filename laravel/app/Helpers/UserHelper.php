@@ -87,12 +87,6 @@ class UserHelper
         return $list;
     }
 
-    // TODO: Разрешенные мета-записи
-    public function allowedMetas(): array
-    {
-        return [];
-    }
-
     /**
      * @param CreateNewToken $token
      * @return void
