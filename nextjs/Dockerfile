@@ -17,6 +17,7 @@ RUN npm install --production
 COPY ./ ./
 
 # Build app
+RUN npx next telemetry disable
 RUN npm run build
 
 # Run container as non-root (unprivileged) user
